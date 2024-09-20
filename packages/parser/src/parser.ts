@@ -22,10 +22,12 @@ import type { Envelope, ParsedResult } from './types/index.js';
  *
  *   const parsedSafe: ParsedResult<SqsEnvelope> = parse(event, SqsEnvelope, Order, true)
  * }
- * @param data the data to parse
- * @param envelope the envelope to use, can be undefined
- * @param schema the schema to use
- * @param safeParse whether to use safeParse or not, if true it will return a ParsedResult with the original event if the parsing fails
+ * ```
+ *
+ * @param data - The data to parse
+ * @param envelope - The envelope to use, can be undefined
+ * @param schema - The schema to use
+ * @param safeParse - Whether to use Zod's `safeParse` or not, if `true` it will return a `ParsedResult` with the original event when parsing fails
  */
 const parse = <T extends ZodSchema, E extends Envelope>(
   data: z.infer<T>,

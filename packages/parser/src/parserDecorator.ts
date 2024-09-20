@@ -10,28 +10,26 @@ import type { ParserOutput } from './types/parser.js';
  *
  * @example
  * ```typescript
- * import { z } from 'zod';
  * import type { LambdaInterface } from '@aws-lambda-powertools/commons/types';
- * import type { SqSEvent } from '@aws-lambda-powertools/parser/types;
+ * import type { Context } from 'aws-lambda';
+ * import { z } from 'zod';
  * import { parser } from '@aws-lambda-powertools/parser';
  * import { SqsEnvelope } from '@aws-lambda-powertools/parser/envelopes';
  *
- * const Order = z.object({
+ * const OrderSchema = z.object({
  *   orderId: z.string(),
  *   description: z.string(),
  * });
+ * type Order = z.infer<typeof OrderSchema>;
  *
  * class Lambda implements LambdaInterface {
- *
- *   @parser({ envelope: SqsEnvelope, schema: OrderSchema })
+ *   ⁣@parser({ envelope: SqsEnvelope, schema: OrderSchema })
  *   public async handler(event: Order, _context: Context): Promise<unknown> {
- *   // sqs event is parsed and the payload is extracted and parsed
- *   // apply business logic to your Order event
+ *   // The SQS event is parsed and the payload is extracted and parsed
  *   const res = processOrder(event);
  *   return res;
  *   }
  * }
- *
  * ```
  *
  * In case you want to parse the event and handle the error, you can use the safeParse option.
@@ -39,23 +37,23 @@ import type { ParserOutput } from './types/parser.js';
  *
  * @example
  * ```typescript
- *
  * import type { LambdaInterface } from '@aws-lambda-powertools/commons/types';
  * import type { SqSEvent, ParsedResult } from '@aws-lambda-powertools/parser/types;
+ * import type { Context } from 'aws-lambda';
  * import { z } from 'zod';
  * import { parser } from '@aws-lambda-powertools/parser';
  * import { SqsEnvelope } from '@aws-lambda-powertools/parser/envelopes';
  *
  *
- * const Order = z.object({
+ * const OrderSchema = z.object({
  *   orderId: z.string(),
  *   description: z.string(),
  * }
+ * type Order = z.infer<typeof OrderSchema>;
  *
  * class Lambda implements LambdaInterface {
- *
- *   @parser({ envelope: SqsEnvelope, schema: OrderSchema,  safeParse: true })
- *   public async handler(event: ParsedResult<Order>, _context: unknown): Promise<unknown> {
+ *   ⁣@parser({ envelope: SqsEnvelope, schema: OrderSchema,  safeParse: true })
+ *   public async handler(event: ParsedResult<Order>, _context: Context): Promise<unknown> {
  *     if (event.success) {
  *      // event.data is the parsed event object of type Order
  *     } else {
@@ -66,7 +64,9 @@ import type { ParserOutput } from './types/parser.js';
  * }
  * ```
  *
- * @param options Configure the parser with the `schema`, `envelope` and whether to `safeParse` or not
+ * @param options.schema - The schema to use to parse the event
+ * @param options.envelope - The envelope to use to parse the event, can be undefined
+ * @param options.safeParse - Whether to use Zod's `safeParse` or not, if `true` it will return a `ParsedResult` with the original event when parsing fails
  */
 export const parser = <
   TSchema extends ZodSchema,
