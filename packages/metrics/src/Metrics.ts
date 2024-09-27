@@ -155,7 +155,7 @@ class Metrics extends Utility implements MetricsInterface {
   /**
    * Custom logger object to be used for emitting debug, warning, and error messages.
    */
-  #logger?: GenericLogger;
+  readonly #logger?: GenericLogger;
 
   /**
    * Flag indicating if this is a single metric instance
